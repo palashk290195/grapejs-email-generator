@@ -24,13 +24,13 @@ function App() {
 
       editorRef.current.on('component:selected', (component: any) => {
         const el = component.view.el;
-        el.style.cursor = `url('/ai-logo.png') 15 15, auto !important`;
+        el.style.setProperty('cursor', `url('/ai-logo.png') 15 15, auto`, 'important');
         el.addEventListener('contextmenu', (e: MouseEvent) => {
           e.preventDefault();
           setCursorPosition({ x: e.clientX, y: e.clientY });
           showCustomMenu(e, component);
         });
-      });
+      });      
 
       editorRef.current.on('component:deselected', (component: any) => {
         component.view.el.style.cursor = 'default';
@@ -102,14 +102,17 @@ function App() {
       const newElement = tempDiv.firstElementChild as HTMLElement;
 
       if (newElement) {
-        component.components(newElement.innerHTML);
-        
+        // Update component content
+        component.set('content', newElement.innerHTML);
+
+        // Update component attributes
         const attributes = Array.from(newElement.attributes).reduce((acc: any, attr) => {
           acc[attr.name] = attr.value;
           return acc;
         }, {});
-        component.setAttributes(attributes);
-        
+        component.set('attributes', attributes);
+
+        // Update component style
         if (newElement.style.cssText) {
           const inlineStyles = newElement.style.cssText.split(';').reduce((acc: any, style: string) => {
             const [key, value] = style.split(':').map(s => s.trim());
@@ -118,16 +121,19 @@ function App() {
           }, {});
           component.setStyle(inlineStyles);
         }
+
+        // Force component refresh
+        component.view.render();
       }
 
-      editorRef.current.trigger('change:changesCount');
+      // Trigger change event manually
+      editorRef.current.trigger('component:update', component);
 
       setTimeout(() => {
         resolve();
       }, 300);
     });
   };
-
   return (
     <div style={{ display: 'flex', height: '100vh', position: 'relative' }}>
       <div style={{ width: '70%', height: '100%' }}>
