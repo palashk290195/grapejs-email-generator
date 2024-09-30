@@ -20,24 +20,11 @@ function App() {
           gjsPresetNewsletter: {}
         },
         storageManager: false,
-        deviceManager: {
-          devices: [
-            {
-              name: 'Desktop',
-              width: '',
-            },
-            {
-              name: 'Mobile',
-              width: '320px',
-              widthMedia: '480px',
-            },
-          ]
-        },
       });
 
       editorRef.current.on('component:selected', (component: any) => {
         const el = component.view.el;
-        el.style.cursor = `url('/ai-logo.png'), auto`;
+        el.style.cursor = `url('/ai-logo.png') 15 15, auto !important`;
         el.addEventListener('contextmenu', (e: MouseEvent) => {
           e.preventDefault();
           setCursorPosition({ x: e.clientX, y: e.clientY });
@@ -53,13 +40,6 @@ function App() {
         setHtmlOutput(editorRef.current.getHtml() + '<style>' + editorRef.current.getCss() + '</style>');
       });
     }
-
-    return () => {
-      if (editorRef.current) {
-        editorRef.current.destroy();
-        editorRef.current = null;
-      }
-    };
   }, []);
 
   const showCustomMenu = (e: MouseEvent, component: any) => {
@@ -101,8 +81,6 @@ function App() {
       return;
     }
 
-    console.log('User prompt:', userPrompt);
-
     try {
       const modifiedHtml = await editWithAI(elementHtml, elementCss, userPrompt);
       console.log('Modified HTML:', modifiedHtml);
@@ -116,15 +94,21 @@ function App() {
 
   const applyAISuggestion = (component: any, modifiedHtml: string) => {
     console.log('Applying AI suggestion:', modifiedHtml);
-  
+
     return new Promise<void>((resolve) => {
       const tempDiv = document.createElement('div');
       tempDiv.innerHTML = modifiedHtml;
       
       const newElement = tempDiv.firstElementChild as HTMLElement;
-  
+
       if (newElement) {
-        component.replaceWith(newElement.outerHTML);
+        component.components(newElement.innerHTML);
+        
+        const attributes = Array.from(newElement.attributes).reduce((acc: any, attr) => {
+          acc[attr.name] = attr.value;
+          return acc;
+        }, {});
+        component.setAttributes(attributes);
         
         if (newElement.style.cssText) {
           const inlineStyles = newElement.style.cssText.split(';').reduce((acc: any, style: string) => {
@@ -135,9 +119,9 @@ function App() {
           component.setStyle(inlineStyles);
         }
       }
-  
+
       editorRef.current.trigger('change:changesCount');
-  
+
       setTimeout(() => {
         resolve();
       }, 300);
@@ -166,9 +150,12 @@ function App() {
           padding: '10px',
           borderRadius: '5px',
           boxShadow: '0 0 10px rgba(0,0,0,0.1)',
+          zIndex: 10000,
+          display: 'flex',
+          alignItems: 'center',
           transition: 'opacity 0.3s ease-in-out',
         }}>
-          <Loader2 className="animate-spin" />
+          <Loader2 className="animate-spin" size={24} />
           <span style={{ marginLeft: '10px' }}>AI is editing...</span>
         </div>
       )}

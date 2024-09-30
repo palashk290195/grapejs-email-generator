@@ -31,7 +31,8 @@ app.post('/api/edit-with-ai', async (req, res) => {
           content: `Current HTML element: ${elementHtml}
                     Current CSS: ${JSON.stringify(elementCss)}
                     Request: ${userPrompt}
-                    Respond with only the modified HTML element, including any style changes inline. Style changes should be done, only if asked, otherwise assume existing style changes will be applied.`
+                    Respond with only the modified HTML element, including any style changes inline. Style changes should be done, only if asked, otherwise assume existing style changes will be applied.
+                    VERY IMPORTANT: if user asks to change one aspect, make sure nothing else is changed in the HTML code`
         }
       ],
     });
