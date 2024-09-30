@@ -72,8 +72,7 @@ function App() {
   const handleEditWithAI = async (component: any) => {
     setIsEditing(true);
     const elementHtml = component.toHTML();
-    const elementCss = component.getStyle();
-    console.log('Element HTML and CSS sent to AI:', { html: elementHtml, css: elementCss });
+    console.log('Element HTML sent to AI:', elementHtml);
 
     const userPrompt = prompt('What changes would you like to make to this element?');
     if (!userPrompt) {
@@ -82,7 +81,7 @@ function App() {
     }
 
     try {
-      const modifiedHtml = await editWithAI(elementHtml, elementCss, userPrompt);
+      const modifiedHtml = await editWithAI(elementHtml, userPrompt);
       console.log('Modified HTML:', modifiedHtml);
       await applyAISuggestion(component, modifiedHtml);
     } catch (error) {
@@ -95,45 +94,13 @@ function App() {
   const applyAISuggestion = (component: any, modifiedHtml: string) => {
     console.log('Applying AI suggestion:', modifiedHtml);
 
-    return new Promise<void>((resolve) => {
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = modifiedHtml;
-      
-      const newElement = tempDiv.firstElementChild as HTMLElement;
+    // Directly replace the component's HTML
+    component.replaceWith(modifiedHtml);
 
-      if (newElement) {
-        // Update component content
-        component.set('content', newElement.innerHTML);
-
-        // Update component attributes
-        const attributes = Array.from(newElement.attributes).reduce((acc: any, attr) => {
-          acc[attr.name] = attr.value;
-          return acc;
-        }, {});
-        component.set('attributes', attributes);
-
-        // Update component style
-        if (newElement.style.cssText) {
-          const inlineStyles = newElement.style.cssText.split(';').reduce((acc: any, style: string) => {
-            const [key, value] = style.split(':').map(s => s.trim());
-            if (key && value) acc[key] = value;
-            return acc;
-          }, {});
-          component.setStyle(inlineStyles);
-        }
-
-        // Force component refresh
-        component.view.render();
-      }
-
-      // Trigger change event manually
-      editorRef.current.trigger('component:update', component);
-
-      setTimeout(() => {
-        resolve();
-      }, 300);
-    });
+    // Trigger change event manually
+    editorRef.current.trigger('component:update', component);
   };
+
   return (
     <div style={{ display: 'flex', height: '100vh', position: 'relative' }}>
       <div style={{ width: '70%', height: '100%' }}>
