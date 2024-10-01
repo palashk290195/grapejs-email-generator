@@ -1,46 +1,83 @@
-# Getting Started with Create React App
+# Enhanced GrapesJS Email Editor with AI Integration
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
 
-## Available Scripts
+This project is an enhanced email template editor built on top of GrapesJS, featuring AI-powered editing capabilities. It allows users to create and edit email templates visually, with the added ability to use AI suggestions for content and style modifications.
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- Visual email template editing using GrapesJS
+- AI-powered suggestions for content and style changes
+- Conservative update strategy to preserve email structure
+- Configurable thresholds for content changes
+- Real-time preview of email templates
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Prerequisites
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- Node.js (v14 or later)
+- npm (v6 or later)
 
-### `npm test`
+## Installation
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Clone the repository:
 
-### `npm run build`
+2. Install dependencies:
+   ```
+   npm install
+   ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+3. Set up environment variables:
+   Create a `.env` file in the root directory and add the following:
+   ```
+   REACT_APP_PORT=3000
+  SERVER_PORT=3001
+  REACT_APP_API_URL=http://localhost:3001
+  OPENAI_API_KEY=your_open_ai_api_key_here
+  # (OPTIONAL) Unsplash API keys for email modifications
+  UNSPLASH_APPLICATION_ID=
+  UNSPLASH_ACCESS_KEY=
+  UNSPLASH_SECRET_KEY=
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Usage
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. Start the development server:
+   ```
+   npm run dev
+   ```
 
-### `npm run eject`
+2. Open your browser and navigate to `http://localhost:3000`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+3. Use the visual editor to create or edit email templates
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+4. To use AI suggestions:
+   - Select an element in the editor
+   - Right-click and choose "Edit with AI"
+   - Enter your request in the prompt
+   - Review and apply the AI's suggestion
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Configuration
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+You can adjust the behavior of the AI editing feature by modifying the `config` object in `src/App.tsx`:
 
-## Learn More
+```javascript
+const config = {
+  contentChangeThreshold: 0.5, // Threshold for significant content change (50%)
+  significantChangeThreshold: 0.8, // Threshold for user confirmation (80%)
+};
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- `contentChangeThreshold`: Determines when to apply conservative updates (default: 0.5)
+- `significantChangeThreshold`: Threshold for prompting user confirmation (default: 0.8)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Project Structure
+
+- `src/App.tsx`: Main application component
+- `src/apiClient.ts`: API client for AI service
+- `public/`: Static assets
+
+
+## Acknowledgments
+
+- [GrapesJS](https://grapesjs.com/)
+- [OpenAI](https://openai.com/) for AI capabilities
