@@ -33,13 +33,13 @@ This project is an enhanced email template editor built on top of GrapesJS, feat
    Create a `.env` file in the root directory and add the following:
    ```
    REACT_APP_PORT=3000
-  SERVER_PORT=3001
-  REACT_APP_API_URL=http://localhost:3001
-  OPENAI_API_KEY=your_open_ai_api_key_here
-  # (OPTIONAL) Unsplash API keys for email modifications
-  UNSPLASH_APPLICATION_ID=
-  UNSPLASH_ACCESS_KEY=
-  UNSPLASH_SECRET_KEY=
+   SERVER_PORT=3001
+   REACT_APP_API_URL=http://localhost:3001
+   OPENAI_API_KEY=your_open_ai_api_key_here
+   # (OPTIONAL) Unsplash API keys for email modifications with images
+   UNSPLASH_APPLICATION_ID=
+   UNSPLASH_ACCESS_KEY=
+   UNSPLASH_SECRET_KEY=
    ```
 
 ## Usage
