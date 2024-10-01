@@ -16,7 +16,7 @@ export const editWithAI = async (elementHtml: string, userPrompt: string) => {
     }
 
     const data = await response.json();
-    return data.modifiedHtml;
+    return data.response;
   } catch (error) {
     console.error('Error in editWithAI:', error);
     throw error;

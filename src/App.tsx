@@ -93,26 +93,30 @@ function App() {
 
   const applyAISuggestion = (component: any, modifiedHtml: string) => {
     console.log('Applying AI suggestion:', modifiedHtml);
-
-    // Directly replace the component's HTML
-    component.replaceWith(modifiedHtml);
-
-    // Trigger change event manually
-    editorRef.current.trigger('component:update', component);
+  
+    // Parse the modified HTML
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(modifiedHtml, 'text/html');
+    const modifiedElement = doc.body.firstElementChild;
+  
+    if (modifiedElement) {
+      // Replace the component's content with the modified HTML
+      component.replaceWith(modifiedElement.outerHTML);
+  
+      // Force the editor to re-render
+      editorRef.current.refresh();
+  
+      // Update the HTML output state
+      setHtmlOutput(editorRef.current.getHtml() + '<style>' + editorRef.current.getCss() + '</style>');
+    } else {
+      console.error('Failed to parse modified HTML');
+    }
   };
 
   return (
     <div style={{ display: 'flex', height: '100vh', position: 'relative' }}>
-      <div style={{ width: '70%', height: '100%' }}>
+      <div style={{ width: '100%', height: '100%' }}>
         <div id="gjs" style={{ height: 'calc(100% - 40px)', border: '1px solid #ddd' }}></div>
-      </div>
-      <div style={{ width: '30%', padding: '20px', overflowY: 'auto' }}>
-        <h3>Generated HTML:</h3>
-        <textarea
-          value={htmlOutput}
-          readOnly
-          style={{ width: '100%', height: 'calc(100% - 40px)', resize: 'none' }}
-        />
       </div>
       {isEditing && (
         <div style={{
