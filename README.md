@@ -11,6 +11,8 @@ This project is an enhanced email template editor built on top of GrapesJS, feat
 - Conservative update strategy to preserve email structure
 - Configurable thresholds for content changes
 - Real-time preview of email templates
+![Uploading image.png…]()
+
 
 ## Prerequisites
 
